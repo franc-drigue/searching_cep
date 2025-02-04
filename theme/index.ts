@@ -1,10 +1,10 @@
-import { Theme, DefaultTheme, DarkTheme } from '@react-navigation/native';
+import { DefaultTheme, DarkTheme } from '@react-navigation/native';
 
 import { COLORS } from './colors';
 
-const NAV_THEME: { light: Theme; dark: Theme } = {
+const NAV_THEME = {
   light: {
-    dark: false,
+    ...DefaultTheme,
     colors: {
       background: COLORS.light.background,
       border: COLORS.light.grey5,
@@ -13,10 +13,9 @@ const NAV_THEME: { light: Theme; dark: Theme } = {
       primary: COLORS.light.primary,
       text: COLORS.black,
     },
-    fonts: DefaultTheme.fonts,
   },
   dark: {
-    dark: true,
+    ...DarkTheme,
     colors: {
       background: COLORS.dark.background,
       border: COLORS.dark.grey5,
@@ -25,7 +24,6 @@ const NAV_THEME: { light: Theme; dark: Theme } = {
       primary: COLORS.dark.primary,
       text: COLORS.white,
     },
-    fonts: DarkTheme.fonts,
   },
 };
 
