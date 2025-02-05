@@ -56,8 +56,8 @@ export default function App(){
       setIsVisible(true);
       setMessenger("");
     }else {
-      setIsVisible(false)
-      setMessenger("Cep digitado é muito curto ou inválido");
+      setIsVisible(false);
+      setMessenger("Cep digitado é inválido");
     }
   }
 
