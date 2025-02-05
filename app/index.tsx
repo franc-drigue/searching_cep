@@ -1,8 +1,9 @@
-import React, {useEffect} from "react";
+import React from "react";
 import { 
   View ,
   TextInput
 } from "react-native";
+import Ionicons from '@expo/vector-icons/Ionicons'
 import { Text } from '~/components/nativewindui/Text';
 import { Button } from "~/components/nativewindui/Button";
 import { CardInfo } from "~/components/myComponentes/CardInfo";
@@ -10,7 +11,6 @@ import { useStore } from "~/store/store";
 
 
 export default function App(){
-
   const {
     isVisible, 
     setIsVisible,
@@ -24,35 +24,47 @@ export default function App(){
 
   const CepRequest = async (Cep: string) => {
     try {
-      const filterCep = Cep.trim();
-      const data = await fetch(`https://viacep.com.br/ws/${filterCep}/json`);
-      const { localidade, cep , logradouro, uf, bairro } = await data.json()
+      const data = await fetch(`https://viacep.com.br/ws/${Cep}/json`);
+
+      if(!data.ok) {
+        setCepInfo({
+          cep: "",
+          localidade: "",
+          uf: "",
+          bairro: "",
+          logradouro: "",
+        });
+        throw new Error("Falha na requisição");
+      }
+
+      const { localidade, cep , logradouro, uf, bairro } = await data.json();
       setCepInfo({
         cep,
         localidade,
         uf,
         bairro,
         logradouro,
-      })
+      });
     } catch (error) {
       console.error("Error fetching CEP:", error);
     }
   }
   
   const fetchCep = async () => {
-    if (cepInput.trim()) {
+    if (cepInput.trim() && cepInput.trim().length === 8) {
       await CepRequest(cepInput);
       setIsVisible(true);
       setMessenger("");
     }else {
-      setMessenger("Digite um cep válido");
+      setIsVisible(false)
+      setMessenger("Cep digitado é muito curto ou inválido");
     }
   }
 
   const clearInput = () => {
     setCepInput("");
     setMessenger("");
-    setIsVisible(false)
+    setIsVisible(false);
   }
 
   return (
@@ -67,12 +79,12 @@ export default function App(){
          placeholder="Digite seu CEP"
          keyboardType="numeric"
         />
-        <View className="mt-5 flex-row gap-6">
+        <View className="mt-3 flex-row gap-3 justify-end w-[90%]">
           <Button variant="tonal" size={'lg'} onPress={fetchCep}>
-            <Text>Buscar</Text>
+            <Ionicons name="search" size={25} color={"#4682B4"}/>
           </Button>
           <Button size={'lg'} className="bg-red-400" onPress={clearInput}>
-            <Text>Limpa</Text>
+          <Ionicons name="close" size={25} color={"#800000"}/>
           </Button>
         </View>
         {
@@ -87,7 +99,7 @@ export default function App(){
         }
         {
           messenger? 
-             <View className="bg-white w-[60%] mt-12 shadow-black shadow-xl rounded-lg border-gray-200 border h-[5%] p-1 justify-center items-center">
+             <View className="bg-white w-[80%] mt-12 shadow-black shadow-xl rounded-lg border-gray-200 border h-[5%] p-1 justify-center items-center">
                 <Text className="text-gray-500">{messenger}</Text>
              </View> : ''
         }
