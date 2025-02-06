@@ -1,7 +1,8 @@
 import React from "react";
 import { 
   View ,
-  TextInput
+  TextInput,
+  ActivityIndicator
 } from "react-native";
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { Text } from '~/components/nativewindui/Text';
@@ -11,6 +12,7 @@ import { useStore } from "~/store/store";
 
 
 export default function App(){
+
   const {
     isVisible, 
     setIsVisible,
@@ -19,10 +21,13 @@ export default function App(){
     cepInfo,
     setCepInfo,
     setMessenger,
-    messenger
+    messenger,
+    setIsloading,
+    isLoading
   } = useStore();
 
   const CepRequest = async (Cep: string) => {
+
     try {
       const data = await fetch(`https://viacep.com.br/ws/${Cep}/json`);
 
@@ -51,15 +56,25 @@ export default function App(){
   }
   
   const fetchCep = async () => {
-    if (cepInput.trim() && cepInput.trim().length === 8) {
-      await CepRequest(cepInput);
-      setIsVisible(true);
-      setMessenger("");
-    }else {
-      setIsVisible(false);
-      setMessenger("Cep digitado é inválido");
+    setIsVisible(false);
+    try {
+        if (cepInput.trim() && cepInput.trim().length === 8) {
+          setIsloading(true);
+    
+          await CepRequest(cepInput);
+          setIsVisible(true);
+          setMessenger("");
+          setIsloading(false);
+        }else {
+          setIsVisible(false);
+          setMessenger("Cep digitado é inválido");
+        }
+      }catch(error){
+        console.error("Error fetching CEP:", error);
+      }
     }
-  }
+   
+
 
   const clearInput = () => {
     setCepInput("");
@@ -87,6 +102,12 @@ export default function App(){
           <Ionicons name="close" size={25} color={"#800000"}/>
           </Button>
         </View>
+        {
+          isLoading ? 
+           <View className="flex-1 justify-center pb-12">
+            <ActivityIndicator size={35}/>
+          </View> : ""
+        }
         {
           isVisible ?  
             <CardInfo
