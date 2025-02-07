@@ -30,15 +30,8 @@ export default function App(){
 
     try {
       const data = await fetch(`https://viacep.com.br/ws/${Cep}/json`);
-
+      
       if(!data.ok) {
-        setCepInfo({
-          cep: "",
-          localidade: "",
-          uf: "",
-          bairro: "",
-          logradouro: "",
-        });
         throw new Error("Falha na requisição");
       }
 
@@ -80,6 +73,7 @@ export default function App(){
     setCepInput("");
     setMessenger("");
     setIsVisible(false);
+    setIsloading(false);
   }
 
   return (
