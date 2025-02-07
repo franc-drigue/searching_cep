@@ -30,8 +30,15 @@ export default function App(){
 
     try {
       const data = await fetch(`https://viacep.com.br/ws/${Cep}/json`);
-      
+
       if(!data.ok) {
+        setCepInfo({
+          cep: "",
+          localidade: "",
+          uf: "",
+          bairro: "",
+          logradouro: ""
+        })
         throw new Error("Falha na requisição");
       }
 
@@ -116,7 +123,7 @@ export default function App(){
           messenger? 
              <View className="bg-white w-[80%] mt-12 shadow-black shadow-xl rounded-lg border-gray-200 border h-[5%] p-1 justify-center items-center">
                 <Text className="text-gray-500">{messenger}</Text>
-             </View> : ''
+             </View> : ""
         }
       </View>
   )
